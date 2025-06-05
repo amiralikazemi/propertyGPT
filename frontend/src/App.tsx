@@ -4,6 +4,7 @@ import './App.css'
 import TopNav from './components/TopNav'
 import Sidebar from './components/Sidebar'
 import ChatArea from './components/ChatArea'
+import ImagePanel from './components/ImagePanel'
 
 function App() {
 
@@ -22,6 +23,9 @@ function App() {
             {/* Chat Area (Left) */}
             <div className="flex-1 flex flex-col border-r border-gray-200">
               <ChatArea />
+            </div>
+            <div className='hidden md:block w-1/2 bg-white'>
+              <ImagePanel />
             </div>
           </div>
         </div>
