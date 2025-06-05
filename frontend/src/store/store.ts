@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 import type { LatLngExpression } from 'leaflet';
 
-// Define the parts of state used by the sidebar and the ImagePanel
+// Define the parts of state used by the sidebar, ImagePanel, and TopNav
 interface MapState {
   location: LatLngExpression;
   zoom: number;
@@ -21,6 +21,13 @@ interface AppState {
   // Mobile ImagePanel state
   mobileImagePanelOpen: boolean;
   setMobileImagePanelOpen: (open: boolean) => void;
+
+  // New Chat action (TopNav)
+  addNewChat: () => void;
+
+  // Model selection (TopNav)
+  selectedModel: string;
+  setSelectedModel: (model: string) => void;
 }
 
 // Create a minimal store
@@ -40,4 +47,14 @@ export const useStore = create<AppState>((set) => ({
   // Mobile panel
   mobileImagePanelOpen: false,
   setMobileImagePanelOpen: (open) => set({ mobileImagePanelOpen: open }),
+
+  // TopNav: New Chat (stub implementation)
+  addNewChat: () => {
+    // TODO: implement chat creation logic
+    console.warn('addNewChat called, but chat state is not implemented.');
+  },
+
+  // TopNav: Model selection
+  selectedModel: 'GPT-4',
+  setSelectedModel: (model) => set({ selectedModel: model }),
 }));
