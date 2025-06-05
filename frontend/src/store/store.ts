@@ -21,6 +21,10 @@ type MapState = {
 };
 
 type AppState = {
+  // Theme state
+  darkMode: boolean;
+  toggleDarkMode: () => void;
+
   // Sidebar state
   expanded: boolean;
   toggleExpanded: () => void;
@@ -81,7 +85,8 @@ const persistedState = loadPersistedState();
 const initialState = {
   chatHistory: persistedState?.chatHistory || initialChats,
   activeChat: persistedState?.activeChat || 1,
-  selectedModel: persistedState?.selectedModel || 'GPT-4'
+  selectedModel: persistedState?.selectedModel || 'GPT-4',
+  darkMode: false
 };
 
 // Helper function to generate chat title from first message
@@ -93,6 +98,7 @@ const generateChatTitle = (message: string): string => {
 // Create store
 export const useStore = create<AppState>((set, get) => ({
   // Initial state
+  darkMode: initialState.darkMode,
   expanded: false,
   activeChat: initialState.activeChat,
   chatHistory: [...initialState.chatHistory],
@@ -101,6 +107,17 @@ export const useStore = create<AppState>((set, get) => ({
   mapState: {
     location: [25.2048, 55.2708], // Dubai coordinates
     zoom: 13
+  },
+
+  // Theme actions
+  toggleDarkMode: () => {
+    set((state) => ({ darkMode: !state.darkMode }));
+    localStorage.setItem('propertyGPT-state', JSON.stringify({
+      ...get(),
+      expanded: undefined,
+      mobileImagePanelOpen: undefined,
+      mapState: undefined
+    }));
   },
 
   // Actions

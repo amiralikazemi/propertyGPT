@@ -6,7 +6,7 @@ import logoImage from '../assets/primary-bg-transparent.webp';
 
 const ChatArea = () => {
   const [message, setMessage] = useState('');
-  const { activeChat, chatHistory, setMobileImagePanelOpen, addMessageToChat } = useStore();
+  const { activeChat, chatHistory, setMobileImagePanelOpen, addMessageToChat, darkMode } = useStore();
   
   const currentChat = chatHistory.find(chat => chat.id === activeChat);
   const messages = currentChat?.messages || [];
@@ -42,8 +42,12 @@ const ChatArea = () => {
         <div className="p-4 space-y-4">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-[40vh]">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2 self-start">Hello there!</h2>
-              <p className="text-lg text-gray-500 mb-8 self-start">How can I help you today?</p>
+              <h2 className={`text-2xl font-bold mb-2 self-start ${
+                darkMode ? 'text-gray-200' : 'text-gray-800'
+              }`}>Hello there!</h2>
+              <p className={`text-lg mb-8 self-start ${
+                darkMode ? 'text-gray-400' : 'text-gray-500'
+              }`}>How can I help you today?</p>
             </div>
           ) : (
             messages.map((msg, index) => (
@@ -62,8 +66,10 @@ const ChatArea = () => {
                 )}
                 <div className={`rounded-2xl p-4 max-w-[70%] ${
                   msg.sender === 'user'
-                    ? 'bg-black text-white'
-                    : 'bg-white text-black'
+                    ? 'bg-blue-600 text-white'
+                    : darkMode 
+                      ? 'bg-gray-700 text-gray-200' 
+                      : 'bg-white text-gray-900'
                 }`}>
                   <p className="">{msg.text}</p>
                 </div>
@@ -81,20 +87,32 @@ const ChatArea = () => {
               <button
                 key={index}
                 onClick={() => setMessage(`${prompt.title} ${prompt.subtitle}`)}
-                className="flex flex-col items-start bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm hover:bg-gray-50 transition-colors text-left"
+                className={`flex flex-col items-start rounded-xl px-4 py-3 shadow-sm transition-colors text-left ${
+                  darkMode 
+                    ? 'bg-gray-800 border-gray-700 hover:bg-gray-700' 
+                    : 'bg-white border border-gray-200 hover:bg-gray-50'
+                }`}
               >
-                <span className="font-medium text-gray-800 text-sm">{prompt.title}</span>
-                <span className="text-xs text-gray-500">{prompt.subtitle}</span>
+                <span className={`font-medium text-sm ${
+                  darkMode ? 'text-gray-200' : 'text-gray-800'
+                }`}>{prompt.title}</span>
+                <span className={`text-xs ${
+                  darkMode ? 'text-gray-400' : 'text-gray-500'
+                }`}>{prompt.subtitle}</span>
               </button>
             ))}
           </div>
         </div>
       )}
       
-      <div className=" md:h-40">
+      <div className="md:h-40">
         <div className="p-4 h-full">
           {/* Mobile layout is normal flex, desktop is relative positioning with h-full */}
-          <div className="flex items-center md:block bg-gray-100 border border-gray-300 rounded-lg px-3 py-2 md:py-3 md:h-full md:relative focus-within:outline focus-within:outline-2 focus-within:outline-black">
+          <div className={`flex items-center md:block rounded-lg px-3 py-2 md:py-3 md:h-full md:relative focus-within:outline focus-within:outline-2 ${
+            darkMode 
+              ? 'bg-gray-800 border-gray-700 focus-within:outline-gray-600' 
+              : 'bg-gray-100 border border-gray-300 focus-within:outline-black'
+          }`}>
             {/* On mobile: normal layout. On desktop: positioned at top */}
             <input
               type="text"
@@ -102,17 +120,25 @@ const ChatArea = () => {
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Send a message..."
-              className="flex-1 mx-2 py-1 focus:outline-none bg-gray-100 md:w-full md:mb-10"
+              className={`flex-1 mx-2 py-1 focus:outline-none md:w-full md:mb-10 ${
+                darkMode 
+                  ? 'bg-gray-800 text-gray-200 placeholder-gray-500' 
+                  : 'bg-gray-100 text-gray-900 placeholder-gray-500'
+              }`}
             />
             
             {/* Mobile: normal layout. Desktop: absolute positioned at bottom */}
             <div className="flex md:absolute md:bottom-2 md:left-0 md:w-full md:px-3 md:justify-between">
-              <button className="p-1 text-gray-500 hover:text-gray-700 hidden md:block">
+              <button className={`p-1 hover:text-gray-700 hidden md:block ${
+                darkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500'
+              }`}>
                 <FiPaperclip size={20} />
               </button>
               
               {/* Only visible on mobile */}
-              <button className="p-1 text-gray-500 hover:text-gray-700 md:hidden">
+              <button className={`p-1 hover:text-gray-700 md:hidden ${
+                darkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500'
+              }`}>
                 <FiPaperclip size={20} />
               </button>
 
@@ -122,7 +148,7 @@ const ChatArea = () => {
                 className={`p-2 rounded-full ${
                   message.trim()
                     ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'text-gray-400'
+                    : darkMode ? 'text-gray-600' : 'text-gray-400'
                 }`}
               >
                 <FiSend size={20} />
@@ -133,7 +159,11 @@ const ChatArea = () => {
           {/* Mobile-only toggle button */}
           <button
             onClick={() => setMobileImagePanelOpen(true)}
-            className="md:hidden mt-3 w-full py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium text-gray-700"
+            className={`md:hidden mt-3 w-full py-2 rounded-lg text-sm font-medium ${
+              darkMode 
+                ? 'bg-gray-800 hover:bg-gray-700 text-gray-300' 
+                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+            }`}
           >
             View Property Details
           </button>

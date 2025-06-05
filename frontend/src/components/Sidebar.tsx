@@ -22,7 +22,8 @@ const Sidebar = () => {
         chatHistory,
         addNewChat,
         deleteChat,
-        renameChat
+        renameChat,
+        darkMode
     } = useStore();
 
     const [editing, setEditing] = useState<EditingState | null>(null);
@@ -42,9 +43,9 @@ const Sidebar = () => {
     };
 
     return (
-        <div className={`flex flex-col items-center justify-between h-screen bg-gray shadow-lg ${
+        <div className={`flex flex-col items-center justify-between h-screen shadow-lg ${
             expanded ? "w-60" : "w-12"
-        } py-6 transition-all duration-500 ease-in-out`}>
+        } py-6 transition-all duration-500 ease-in-out ${darkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
             {/* Top Logo */}
             <div className="flex flex-col items-center w-full px-2">
                 {expanded ? (
@@ -57,8 +58,9 @@ const Sidebar = () => {
                             />
                         </div>
                         <span
-                            className={`ml-3 text-xl font-bold text-gray-800 transition-all duration-500 ease-in-out
+                            className={`ml-3 text-xl font-bold transition-all duration-500 ease-in-out
                                 ${expanded ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}
+                                ${darkMode ? 'text-gray-200' : 'text-gray-800'}
                             `}
                         >
                             PropertyGPT
@@ -80,13 +82,19 @@ const Sidebar = () => {
                     <button
                         onClick={addNewChat}
                         className={`flex items-center ${expanded ? "justify-start px-4" : "justify-center"}
-                            w-full py-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 group`}
+                            w-full py-2 rounded-lg group ${
+                                darkMode 
+                                    ? 'text-gray-400 hover:text-blue-400 hover:bg-gray-700' 
+                                    : 'text-gray-500 hover:text-blue-600 hover:bg-blue-50'
+                            }`}
                     >
                         <span className="flex items-center justify-center">
                             <FiPlus size={24} />
                         </span>
                         {expanded && (
-                            <span className="ml-4 text-sm font-medium group-hover:text-blue-600">
+                            <span className={`ml-4 text-sm font-medium ${
+                                darkMode ? 'group-hover:text-blue-400' : 'group-hover:text-blue-600'
+                            }`}>
                                 New Chat
                             </span>
                         )}
@@ -96,17 +104,23 @@ const Sidebar = () => {
                     <button
                         onClick={toggleExpanded}
                         className={`flex items-center ${expanded ? "justify-start px-4" : "justify-center"}
-                            w-full py-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 group`}
+                            w-full py-2 rounded-lg group ${
+                                darkMode 
+                                    ? 'text-gray-400 hover:text-blue-400 hover:bg-gray-700' 
+                                    : 'text-gray-500 hover:text-blue-600 hover:bg-blue-50'
+                            }`}
                     >
                         <span className="flex items-center justify-center">
                             {expanded ? (
-                                <FiChevronLeft className="text-gray-500" size={24} />
+                                <FiChevronLeft className={darkMode ? "text-gray-400" : "text-gray-500"} size={24} />
                             ) : (
-                                <FiChevronRight className="text-gray-500" size={24} />
+                                <FiChevronRight className={darkMode ? "text-gray-400" : "text-gray-500"} size={24} />
                             )}
                         </span>
                         {expanded && (
-                            <span className="ml-4 text-sm font-medium group-hover:text-blue-600">
+                            <span className={`ml-4 text-sm font-medium ${
+                                darkMode ? 'group-hover:text-blue-400' : 'group-hover:text-blue-600'
+                            }`}>
                                 Collapse sidebar
                             </span>
                         )}
@@ -122,13 +136,19 @@ const Sidebar = () => {
                         <button
                             key={index}
                             className={`flex items-center ${expanded ? "justify-start px-4" : "justify-center"}
-                                w-full py-2 rounded-lg text-gray-500 hover:text-blue-600 hover:bg-blue-50 group`}
+                                w-full py-2 rounded-lg group ${
+                                    darkMode 
+                                        ? 'text-gray-400 hover:text-blue-400 hover:bg-gray-700' 
+                                        : 'text-gray-500 hover:text-blue-600 hover:bg-blue-50'
+                                }`}
                         >
                             <span className="flex items-center justify-center">
                                 {item.icon}
                             </span>
                             {expanded && (
-                                <span className="ml-4 text-sm font-medium group-hover:text-blue-600">
+                                <span className={`ml-4 text-sm font-medium ${
+                                    darkMode ? 'group-hover:text-blue-400' : 'group-hover:text-blue-600'
+                                }`}>
                                     {item.label}
                                 </span>
                             )}
@@ -140,8 +160,10 @@ const Sidebar = () => {
             {/* Chat History Section */}
             {expanded && (
                 <div className="w-full px-2 mt-4">
-                    <div className="border-t border-gray-200 pt-4">
-                        <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider px-4 mb-3">
+                    <div className={`border-t pt-4 ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                        <h3 className={`text-xs font-medium uppercase tracking-wider px-4 mb-3 ${
+                            darkMode ? 'text-gray-400' : 'text-gray-500'
+                        }`}>
                             Chat History
                         </h3>
 
@@ -152,14 +174,21 @@ const Sidebar = () => {
                                     onClick={() => !editing && setActiveChat(chat.id)}
                                     className={`flex items-center justify-between w-full py-2 px-4 rounded-lg ${
                                         activeChat === chat.id
-                                            ? "bg-blue-50 text-blue-600"
-                                            : "text-gray-700 hover:bg-gray-100"
+                                            ? darkMode 
+                                                ? "bg-gray-700 text-blue-400"
+                                                : "bg-blue-50 text-blue-600"
+                                            : darkMode
+                                                ? "text-gray-300 hover:bg-gray-700"
+                                                : "text-gray-700 hover:bg-gray-100"
                                     } group`}
                                 >
                                     <div className="flex items-center flex-1 min-w-0">
                                         <FiMessageSquare
                                             size={16}
-                                            className={activeChat === chat.id ? "text-blue-600" : "text-gray-500"}
+                                            className={activeChat === chat.id 
+                                                ? darkMode ? "text-blue-400" : "text-blue-600"
+                                                : darkMode ? "text-gray-400" : "text-gray-500"
+                                            }
                                         />
                                         {editing?.id === chat.id ? (
                                             <div className="flex items-center ml-3 flex-1">
@@ -167,7 +196,11 @@ const Sidebar = () => {
                                                     type="text"
                                                     value={editing.title}
                                                     onChange={(e) => setEditing({ ...editing, title: e.target.value })}
-                                                    className="w-[120px] max-w-[120px] px-2 py-1 text-sm border rounded"
+                                                    className={`w-[120px] max-w-[120px] px-2 py-1 text-sm border rounded ${
+                                                        darkMode 
+                                                            ? 'bg-gray-700 border-gray-600 text-gray-200' 
+                                                            : 'bg-white border-gray-300 text-gray-900'
+                                                    }`}
                                                     autoFocus
                                                     onKeyDown={(e) => {
                                                         if (e.key === 'Enter') {
@@ -192,8 +225,12 @@ const Sidebar = () => {
                                             </div>
                                         ) : (
                                             <div className="ml-3 flex-1 min-w-0">
-                                                <div className="text-sm font-medium truncate">{chat.title}</div>
-                                                <div className="text-xs text-gray-500">{chat.date}</div>
+                                                <div className={`text-sm font-medium truncate ${
+                                                    darkMode ? 'text-gray-200' : 'text-gray-900'
+                                                }`}>{chat.title}</div>
+                                                <div className={`text-xs ${
+                                                    darkMode ? 'text-gray-400' : 'text-gray-500'
+                                                }`}>{chat.date}</div>
                                             </div>
                                         )}
                                     </div>
@@ -204,13 +241,21 @@ const Sidebar = () => {
                                                     e.stopPropagation();
                                                     setEditing({ id: chat.id, title: chat.title });
                                                 }}
-                                                className="p-1 text-gray-500 hover:text-blue-600"
+                                                className={`p-1 ${
+                                                    darkMode 
+                                                        ? 'text-gray-400 hover:text-blue-400' 
+                                                        : 'text-gray-500 hover:text-blue-600'
+                                                }`}
                                             >
                                                 <FiEdit2 size={16} />
                                             </button>
                                             <button
                                                 onClick={(e) => handleDelete(chat.id, e)}
-                                                className="p-1 text-gray-500 hover:text-red-600"
+                                                className={`p-1 ${
+                                                    darkMode 
+                                                        ? 'text-gray-400 hover:text-red-400' 
+                                                        : 'text-gray-500 hover:text-red-600'
+                                                }`}
                                             >
                                                 <FiTrash2 size={16} />
                                             </button>
@@ -229,14 +274,18 @@ const Sidebar = () => {
                     // Horizontal layout when expanded
                     <div className="flex items-center w-full justify-left ml-10">
                         <div className="bg-gradient-to-br from-blue-400 to-indigo-600 w-10 h-10 rounded-full"></div>
-                        <div className="text-gray-700 text-base font-medium tracking-wider ml-3">
+                        <div className={`text-base font-medium tracking-wider ml-3 ${
+                            darkMode ? 'text-gray-200' : 'text-gray-700'
+                        }`}>
                             Guest
                         </div>
                     </div>
                 ) : (
                     // Vertical layout when collapsed
                     <div className="flex flex-col items-center">
-                        <div className="text-gray-700 text-base font-medium tracking-wider mb-8 [writing-mode:vertical-lr] rotate-180">
+                        <div className={`text-base font-medium tracking-wider mb-8 [writing-mode:vertical-lr] rotate-180 ${
+                            darkMode ? 'text-gray-200' : 'text-gray-700'
+                        }`}>
                             PropertyGPT
                         </div>
                         <div className="bg-gradient-to-br from-blue-400 to-indigo-600 w-8 h-8 rounded-full"></div>

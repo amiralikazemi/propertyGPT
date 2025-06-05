@@ -21,11 +21,10 @@ const defaultIcon = new Icon({
 });
 
 function App() {
-  const { mapState } = useStore();
-
+  const { mapState, darkMode } = useStore();
 
   return (
-    <div className="flex min-h-screen overflow-hidden">
+    <div className={`flex min-h-screen overflow-hidden ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-white text-gray-900'}`}>
       {/* Expandable Sidebar */}
       <Sidebar />
       
@@ -37,12 +36,12 @@ function App() {
         {/* Chat + Image Panel Area */}
         <div className="flex-1 flex overflow-hidden">
           {/* Chat Area (Left) */}
-          <div className="flex-1 flex flex-col border-r border-gray-200">
+          <div className={`flex-1 flex flex-col border-r ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
             <ChatArea />
           </div>
           
           {/* Image Panel (Right) - Hidden on mobile */}
-          <div className="hidden md:block w-1/2 bg-white">
+          <div className={`hidden md:block w-1/2 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <MapContainer 
               center={mapState.location}
               zoom={mapState.zoom}
