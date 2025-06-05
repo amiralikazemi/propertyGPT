@@ -1,15 +1,23 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
 import TopNav from './components/TopNav'
+import Sidebar from './components/Sidebar'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <div>
-      <TopNav />
+      <div className="flex min-h-screen overflow-hidden">
+        {/* Sidebar */}
+        <Sidebar />
+
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col h-screen">
+          {/* Top Navigation Bar */}
+          <TopNav />
+        </div>
+      </div>
     </div>
 
   )
