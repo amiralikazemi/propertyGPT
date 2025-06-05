@@ -2,59 +2,175 @@
 import { create } from 'zustand';
 import type { LatLngExpression } from 'leaflet';
 
-// Define the parts of state used by the sidebar, ImagePanel, and TopNav
-interface MapState {
+// Define types
+type Message = {
+  text: string;
+  sender: string;
+};
+
+type Chat = {
+  id: number;
+  title: string;
+  date: string;
+  messages: Message[];
+};
+
+type MapState = {
   location: LatLngExpression;
   zoom: number;
-}
+};
 
-interface AppState {
+type AppState = {
   // Sidebar state
   expanded: boolean;
   toggleExpanded: () => void;
-
-  // Map state for ImagePanel
+  
+  // Chat state
+  activeChat: number;
+  setActiveChat: (id: number) => void;
+  chatHistory: Chat[];
+  addNewChat: () => void;
+  addMessageToChat: (chatId: number, message: Message) => void;
+  
+  // Map state
   mapState: MapState;
   setMapLocation: (location: LatLngExpression) => void;
   setMapZoom: (zoom: number) => void;
-
-  // Mobile ImagePanel state
+  
+  // Mobile panel state
   mobileImagePanelOpen: boolean;
   setMobileImagePanelOpen: (open: boolean) => void;
-
-  // New Chat action (TopNav)
-  addNewChat: () => void;
-
-  // Model selection (TopNav)
+  
+  // Model selection state
   selectedModel: string;
   setSelectedModel: (model: string) => void;
-}
+};
 
-// Create a minimal store
-export const useStore = create<AppState>((set) => ({
-  // Sidebar
+// Load persisted state from localStorage
+const loadPersistedState = () => {
+  try {
+    const savedState = localStorage.getItem('propertyGPT-state');
+    if (savedState) {
+      const parsed = JSON.parse(savedState);
+      return {
+        chatHistory: parsed.chatHistory || [],
+        activeChat: parsed.activeChat || 1,
+        selectedModel: parsed.selectedModel || 'GPT-4'
+      };
+    }
+  } catch (error) {
+    console.error('Error loading persisted state:', error);
+  }
+  return null;
+};
+
+// Sample initial chat data
+const initialChats = [
+  {
+    id: 1,
+    title: "New Conversation",
+    date: new Date().toLocaleString(),
+    messages: []
+  }
+];
+
+// Get initial state
+const persistedState = loadPersistedState();
+const initialState = {
+  chatHistory: persistedState?.chatHistory || initialChats,
+  activeChat: persistedState?.activeChat || 1,
+  selectedModel: persistedState?.selectedModel || 'GPT-4'
+};
+
+// Helper function to generate chat title from first message
+const generateChatTitle = (message: string): string => {
+  // Take first 30 characters of message and add ellipsis if longer
+  return message.length > 30 ? `${message.slice(0, 30)}...` : message;
+};
+
+// Create store
+export const useStore = create<AppState>((set, get) => ({
+  // Initial state
   expanded: false,
-  toggleExpanded: () => set((state) => ({ expanded: !state.expanded })),
-
-  // Map defaults to Dubai coordinates
-  mapState: {
-    location: [25.2048, 55.2708],
-    zoom: 13,
-  },
-  setMapLocation: (location) => set((state) => ({ mapState: { ...state.mapState, location } })),
-  setMapZoom: (zoom) => set((state) => ({ mapState: { ...state.mapState, zoom } })),
-
-  // Mobile panel
+  activeChat: initialState.activeChat,
+  chatHistory: [...initialState.chatHistory],
   mobileImagePanelOpen: false,
-  setMobileImagePanelOpen: (open) => set({ mobileImagePanelOpen: open }),
-
-  // TopNav: New Chat (stub implementation)
-  addNewChat: () => {
-    // TODO: implement chat creation logic
-    console.warn('addNewChat called, but chat state is not implemented.');
+  selectedModel: initialState.selectedModel,
+  mapState: {
+    location: [25.2048, 55.2708], // Dubai coordinates
+    zoom: 13
   },
 
-  // TopNav: Model selection
-  selectedModel: 'GPT-4',
-  setSelectedModel: (model) => set({ selectedModel: model }),
+  // Actions
+  toggleExpanded: () => set((state) => ({ expanded: !state.expanded })),
+  setActiveChat: (id) => {
+    set({ activeChat: id });
+    localStorage.setItem('propertyGPT-state', JSON.stringify({
+      ...get(),
+      expanded: undefined,
+      mobileImagePanelOpen: undefined,
+      mapState: undefined
+    }));
+  },
+  addNewChat: () => {
+    const nextId = Math.max(...get().chatHistory.map(c => c.id), 0) + 1;
+    const newChat = {
+      id: nextId,
+      title: "New Conversation",
+      date: new Date().toLocaleString(),
+      messages: []
+    };
+    const newState = {
+      chatHistory: [newChat, ...get().chatHistory],
+      activeChat: newChat.id
+    };
+    set(newState);
+    localStorage.setItem('propertyGPT-state', JSON.stringify({
+      ...get(),
+      expanded: undefined,
+      mobileImagePanelOpen: undefined,
+      mapState: undefined
+    }));
+  },
+
+
+  addMessageToChat: (chatId: number, message: Message) => {
+    const { chatHistory } = get();
+    const updatedChats = chatHistory.map(chat => {
+      if (chat.id === chatId) {
+        const updatedMessages = [...chat.messages, message];
+        // Update title if this is the first user message
+        const shouldUpdateTitle = chat.messages.length === 0 && message.sender === 'user';
+        return {
+          ...chat,
+          messages: updatedMessages,
+          title: shouldUpdateTitle ? generateChatTitle(message.text) : chat.title
+        };
+      }
+      return chat;
+    });
+    set({ chatHistory: updatedChats });
+    localStorage.setItem('propertyGPT-state', JSON.stringify({
+      ...get(),
+      expanded: undefined,
+      mobileImagePanelOpen: undefined,
+      mapState: undefined
+    }));
+  },
+  setMobileImagePanelOpen: (open) => set({ mobileImagePanelOpen: open }),
+  setSelectedModel: (model) => {
+    set({ selectedModel: model });
+    localStorage.setItem('propertyGPT-state', JSON.stringify({
+      ...get(),
+      expanded: undefined,
+      mobileImagePanelOpen: undefined,
+      mapState: undefined
+    }));
+  },
+  setMapLocation: (location) => set((state) => ({ 
+    mapState: { ...state.mapState, location } 
+  })),
+  setMapZoom: (zoom) => set((state) => ({ 
+    mapState: { ...state.mapState, zoom } 
+  }))
 }));
