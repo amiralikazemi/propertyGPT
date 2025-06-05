@@ -155,16 +155,16 @@ export const useStore = create<AppState>((set, get) => ({
     const { chatHistory, activeChat } = get();
     const updatedChats = chatHistory.filter(chat => chat.id !== id);
     
-    // If we're deleting the last chat, create a new one
-    if (updatedChats.length === 0) {
+    // If we're deleting the last chat or the active chat, create a new one
+    if (updatedChats.length === 0 || id === activeChat) {
       const newChat = {
-        id: 1,
+        id: Math.max(...chatHistory.map(c => c.id), 0) + 1,
         title: "New Conversation",
         date: new Date().toLocaleString(),
         messages: []
       };
       const newState = { 
-        chatHistory: [newChat],
+        chatHistory: [newChat, ...updatedChats],
         activeChat: newChat.id
       };
       set(newState);
@@ -177,13 +177,8 @@ export const useStore = create<AppState>((set, get) => ({
       return;
     }
     
-    // If we're deleting the active chat, switch to the most recent chat
-    const newActiveChat = id === activeChat ? updatedChats[0].id : activeChat;
-    
-    set({ 
-      chatHistory: updatedChats,
-      activeChat: newActiveChat
-    });
+    // If we deleted a different chat, just update the chat history
+    set({ chatHistory: updatedChats });
     localStorage.setItem('propertyGPT-state', JSON.stringify({
       ...get(),
       expanded: undefined,
