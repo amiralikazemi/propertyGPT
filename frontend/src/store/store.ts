@@ -30,6 +30,8 @@ type AppState = {
   setActiveChat: (id: number) => void;
   chatHistory: Chat[];
   addNewChat: () => void;
+  deleteChat: (id: number) => void;
+  renameChat: (id: number, newTitle: string) => void;
   addMessageToChat: (chatId: number, message: Message) => void;
   
   // Map state
@@ -132,8 +134,59 @@ export const useStore = create<AppState>((set, get) => ({
       mapState: undefined
     }));
   },
-
-
+  deleteChat: (id) => {
+    const { chatHistory, activeChat } = get();
+    const updatedChats = chatHistory.filter(chat => chat.id !== id);
+    
+    // If we're deleting the last chat, create a new one
+    if (updatedChats.length === 0) {
+      const newChat = {
+        id: 1,
+        title: "New Conversation",
+        date: new Date().toLocaleString(),
+        messages: []
+      };
+      const newState = { 
+        chatHistory: [newChat],
+        activeChat: newChat.id
+      };
+      set(newState);
+      localStorage.setItem('propertyGPT-state', JSON.stringify({
+        ...get(),
+        expanded: undefined,
+        mobileImagePanelOpen: undefined,
+        mapState: undefined
+      }));
+      return;
+    }
+    
+    // If we're deleting the active chat, switch to the most recent chat
+    const newActiveChat = id === activeChat ? updatedChats[0].id : activeChat;
+    
+    set({ 
+      chatHistory: updatedChats,
+      activeChat: newActiveChat
+    });
+    localStorage.setItem('propertyGPT-state', JSON.stringify({
+      ...get(),
+      expanded: undefined,
+      mobileImagePanelOpen: undefined,
+      mapState: undefined
+    }));
+  },
+  renameChat: (id, newTitle) => {
+    const { chatHistory } = get();
+    const updatedChats = chatHistory.map(chat =>
+      chat.id === id ? { ...chat, title: newTitle } : chat
+    );
+    set({ chatHistory: updatedChats });
+    localStorage.setItem('propertyGPT-state', JSON.stringify({
+      ...get(),
+      expanded: undefined,
+      mobileImagePanelOpen: undefined,
+      mapState: undefined
+    }));
+  },
   addMessageToChat: (chatId: number, message: Message) => {
     const { chatHistory } = get();
     const updatedChats = chatHistory.map(chat => {
