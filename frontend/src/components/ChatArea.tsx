@@ -132,7 +132,7 @@ const ChatArea = () => {
                 )}
                 <div className={`rounded-2xl p-4 max-w-[70%] ${
                   msg.sender === 'user'
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-black text-white'
                     : darkMode 
                       ? 'bg-gray-700 text-gray-200' 
                       : 'bg-white text-gray-900'
