@@ -1,2 +1,16 @@
 @import "tailwindcss";
 @tailwind utilities;
+
+/* Dark mode styles for Leaflet popup */
+.dark-mode-popup .leaflet-popup-content-wrapper {
+  background-color: #1f2937; /* bg-gray-800 */
+  color: #e5e7eb; /* text-gray-200 */
+}
+
+.dark-mode-popup .leaflet-popup-tip {
+  background-color: #1f2937; /* bg-gray-800 */
+}
+
+.dark-mode-popup .leaflet-popup-close-button {
+  color: #9ca3af; /* text-gray-400 */
+}

@@ -19,7 +19,7 @@ const defaultIcon = new Icon({
 });
 
 const ImagePanel = () => {
-  const { mobileImagePanelOpen, setMobileImagePanelOpen, mapState } = useStore();
+  const { mobileImagePanelOpen, setMobileImagePanelOpen, mapState, darkMode } = useStore();
   
   useEffect(() => {
     // Force a resize event when the panel opens to ensure the map renders correctly
@@ -38,16 +38,24 @@ const ImagePanel = () => {
       onClick={() => setMobileImagePanelOpen(false)}
     >
       <div 
-        className="bg-white rounded-xl w-full max-w-md h-[80vh] flex flex-col"
+        className={`rounded-xl w-full max-w-md h-[80vh] flex flex-col ${
+          darkMode ? 'bg-gray-800' : 'bg-white'
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center p-4 border-b">
-          <h3 className="font-medium text-lg">Property Location</h3>
+        <div className={`flex justify-between items-center p-4 border-b ${
+          darkMode ? 'border-gray-700' : 'border-gray-200'
+        }`}>
+          <h3 className={`font-medium text-lg ${
+            darkMode ? 'text-gray-200' : 'text-gray-800'
+          }`}>Property Location</h3>
           <button 
             onClick={() => setMobileImagePanelOpen(false)} 
-            className="p-1 rounded-full hover:bg-gray-100"
+            className={`p-1 rounded-full ${
+              darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+            }`}
           >
-            <FiX size={24} />
+            <FiX size={24} className={darkMode ? 'text-gray-400' : 'text-gray-600'} />
           </button>
         </div>
         
@@ -64,8 +72,10 @@ const ImagePanel = () => {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
               <Marker position={mapState.location} icon={defaultIcon}>
-                <Popup>
-                  Luxury Condo<br/>Dubai, UAE
+                <Popup className={darkMode ? 'dark-mode-popup' : ''}>
+                  <div className={darkMode ? 'text-gray-200 bg-gray-800' : ''}>
+                    Luxury Condo<br/>Dubai, UAE
+                  </div>
                 </Popup>
               </Marker>
               {mapState.highlightedArea && (
