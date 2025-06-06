@@ -5,7 +5,7 @@ import { useStore } from '../store/store';
 const TopNav = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { addNewChat, selectedModel, setSelectedModel, darkMode, toggleDarkMode } = useStore();
+  const { addNewChat, selectedModel, setSelectedModel, darkMode, toggleDarkMode, mobileMenuOpen, setMobileMenuOpen } = useStore();
 
   const models = ['GPT-3.5', 'GPT-4', 'Claude-3', 'Gemini-Pro'];
 
@@ -85,13 +85,13 @@ const TopNav = () => {
       </button>
       {/* Hamburger Button - only visible on mobile */}
       <button
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         className={`ml-2 p-2 rounded-lg transition-colors md:hidden ${
           darkMode
             ? 'text-gray-300 hover:bg-gray-700'
             : 'text-gray-700 hover:bg-gray-100'
         }`}
         aria-label="Open menu"
-        // Add your onClick handler here if needed
       >
         <FiMenu size={22} />
       </button>

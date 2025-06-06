@@ -29,6 +29,10 @@ type AppState = {
   expanded: boolean;
   toggleExpanded: () => void;
   
+  // Mobile sidebar state
+  mobileMenuOpen: boolean;
+  setMobileMenuOpen: (open: boolean) => void;
+  
   // Chat state
   activeChat: number;
   setActiveChat: (id: number) => void;
@@ -100,6 +104,7 @@ export const useStore = create<AppState>((set, get) => ({
   // Initial state
   darkMode: initialState.darkMode,
   expanded: false,
+  mobileMenuOpen: false,
   activeChat: initialState.activeChat,
   chatHistory: [...initialState.chatHistory],
   mobileImagePanelOpen: false,
@@ -116,18 +121,21 @@ export const useStore = create<AppState>((set, get) => ({
       ...get(),
       expanded: undefined,
       mobileImagePanelOpen: undefined,
+      mobileMenuOpen: undefined,
       mapState: undefined
     }));
   },
 
   // Actions
   toggleExpanded: () => set((state) => ({ expanded: !state.expanded })),
+  setMobileMenuOpen: (open) => set({ mobileMenuOpen: open }),
   setActiveChat: (id) => {
     set({ activeChat: id });
     localStorage.setItem('propertyGPT-state', JSON.stringify({
       ...get(),
       expanded: undefined,
       mobileImagePanelOpen: undefined,
+      mobileMenuOpen: undefined,
       mapState: undefined
     }));
   },
@@ -148,6 +156,7 @@ export const useStore = create<AppState>((set, get) => ({
       ...get(),
       expanded: undefined,
       mobileImagePanelOpen: undefined,
+      mobileMenuOpen: undefined,
       mapState: undefined
     }));
   },
@@ -172,6 +181,7 @@ export const useStore = create<AppState>((set, get) => ({
         ...get(),
         expanded: undefined,
         mobileImagePanelOpen: undefined,
+        mobileMenuOpen: undefined,
         mapState: undefined
       }));
       return;
@@ -183,6 +193,7 @@ export const useStore = create<AppState>((set, get) => ({
       ...get(),
       expanded: undefined,
       mobileImagePanelOpen: undefined,
+      mobileMenuOpen: undefined,
       mapState: undefined
     }));
   },
@@ -196,6 +207,7 @@ export const useStore = create<AppState>((set, get) => ({
       ...get(),
       expanded: undefined,
       mobileImagePanelOpen: undefined,
+      mobileMenuOpen: undefined,
       mapState: undefined
     }));
   },
@@ -219,6 +231,7 @@ export const useStore = create<AppState>((set, get) => ({
       ...get(),
       expanded: undefined,
       mobileImagePanelOpen: undefined,
+      mobileMenuOpen: undefined,
       mapState: undefined
     }));
   },
@@ -229,6 +242,7 @@ export const useStore = create<AppState>((set, get) => ({
       ...get(),
       expanded: undefined,
       mobileImagePanelOpen: undefined,
+      mobileMenuOpen: undefined,
       mapState: undefined
     }));
   },
