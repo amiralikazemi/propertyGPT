@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { FiChevronDown, FiPlus, FiSun, FiMoon } from 'react-icons/fi';
+import { FiChevronDown, FiPlus, FiSun, FiMoon, FiMenu } from 'react-icons/fi';
 import { useStore } from '../store/store';
 
 const TopNav = () => {
@@ -79,9 +79,21 @@ const TopNav = () => {
           darkMode 
             ? 'hover:bg-gray-700 text-gray-300' 
             : 'hover:bg-blue-50 text-gray-700'
-        }`}
+        } hidden md:flex`} // <-- hide on mobile, show on md+
       >
         <FiPlus /><div>Chat</div>
+      </button>
+      {/* Hamburger Button - only visible on mobile */}
+      <button
+        className={`ml-2 p-2 rounded-lg transition-colors md:hidden ${
+          darkMode
+            ? 'text-gray-300 hover:bg-gray-700'
+            : 'text-gray-700 hover:bg-gray-100'
+        }`}
+        aria-label="Open menu"
+        // Add your onClick handler here if needed
+      >
+        <FiMenu size={22} />
       </button>
     </div>
   );
