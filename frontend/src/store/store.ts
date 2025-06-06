@@ -18,6 +18,7 @@ type Chat = {
 type MapState = {
   location: LatLngExpression;
   zoom: number;
+  highlightedArea?: LatLngExpression[]; // Array of coordinates forming a polygon
 };
 
 type AppState = {
@@ -54,6 +55,8 @@ type AppState = {
   // Model selection state
   selectedModel: string;
   setSelectedModel: (model: string) => void;
+
+  setHighlightedArea: (area?: LatLngExpression[]) => void;
 };
 
 // Load persisted state from localStorage
@@ -111,7 +114,8 @@ export const useStore = create<AppState>((set, get) => ({
   selectedModel: initialState.selectedModel,
   mapState: {
     location: [25.2048, 55.2708], // Dubai coordinates
-    zoom: 13
+    zoom: 13,
+    highlightedArea: undefined
   },
 
   // Theme actions
@@ -247,7 +251,10 @@ export const useStore = create<AppState>((set, get) => ({
     }));
   },
   setMapLocation: (location) => set((state) => ({ 
-    mapState: { ...state.mapState, location } 
+    mapState: { ...state.mapState, location, zoom: 15 } // Also set zoom when changing location
+  })),
+  setHighlightedArea: (area?: LatLngExpression[]) => set((state) => ({
+    mapState: { ...state.mapState, highlightedArea: area }
   })),
   setMapZoom: (zoom) => set((state) => ({ 
     mapState: { ...state.mapState, zoom } 

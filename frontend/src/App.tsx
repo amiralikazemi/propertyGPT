@@ -4,7 +4,7 @@ import TopNav from './components/TopNav';
 import ChatArea from './components/ChatArea';
 import ImagePanel from './components/ImagePanel';
 import { useStore } from './store/store';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet';
 import type { LatLngExpression } from 'leaflet';
@@ -57,6 +57,17 @@ function App() {
                   Luxury Condo<br/>Dubai, UAE
                 </Popup>
               </Marker>
+              {mapState.highlightedArea && (
+                <Polygon
+                  positions={mapState.highlightedArea}
+                  pathOptions={{
+                    color: '#3B82F6',
+                    fillColor: '#3B82F6',
+                    fillOpacity: 0.2,
+                    weight: 2
+                  }}
+                />
+              )}
             </MapContainer>
           </div>
         </div>

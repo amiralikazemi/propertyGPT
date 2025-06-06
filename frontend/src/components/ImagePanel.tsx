@@ -1,7 +1,7 @@
 // src/components/ImagePanel.tsx
 import { FiX } from 'react-icons/fi';
 import { useStore } from '../store/store';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet';
 import type { LatLngExpression } from 'leaflet';
@@ -68,6 +68,17 @@ const ImagePanel = () => {
                   Luxury Condo<br/>Dubai, UAE
                 </Popup>
               </Marker>
+              {mapState.highlightedArea && (
+                <Polygon
+                  positions={mapState.highlightedArea}
+                  pathOptions={{
+                    color: '#3B82F6',
+                    fillColor: '#3B82F6',
+                    fillOpacity: 0.2,
+                    weight: 2
+                  }}
+                />
+              )}
             </MapContainer>
           </div>
         </div>

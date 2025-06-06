@@ -3,10 +3,19 @@ import { FiPaperclip, FiSend } from 'react-icons/fi';
 import { useState } from 'react';
 import { useStore } from '../store/store';
 import logoImage from '../assets/primary-bg-transparent.webp';
+import type { LatLngExpression } from 'leaflet';
 
 const ChatArea = () => {
   const [message, setMessage] = useState('');
-  const { activeChat, chatHistory, setMobileImagePanelOpen, addMessageToChat, darkMode } = useStore();
+  const { 
+    activeChat, 
+    chatHistory, 
+    setMobileImagePanelOpen, 
+    addMessageToChat, 
+    darkMode,
+    setMapLocation,
+    setHighlightedArea
+  } = useStore();
   
   const currentChat = chatHistory.find(chat => chat.id === activeChat);
   const messages = currentChat?.messages || [];
@@ -23,6 +32,63 @@ const ChatArea = () => {
     
     // Add user message
     addMessageToChat(activeChat, { text: message, sender: 'user' });
+
+    // Simulate map interaction based on message content
+    // In a real application, this would be determined by AI analysis of the message
+    const simulateMapInteraction = () => {
+      // Example coordinates for different Dubai areas
+      const areas = {
+        downtown: {
+          center: [25.1972, 55.2744],
+          area: [
+            [25.2072, 55.2644],
+            [25.2072, 55.2844],
+            [25.1872, 55.2844],
+            [25.1872, 55.2644]
+          ]
+        },
+        marina: {
+          center: [25.0819, 55.1367],
+          area: [
+            [25.0919, 55.1267],
+            [25.0919, 55.1467],
+            [25.0719, 55.1467],
+            [25.0719, 55.1267]
+          ]
+        },
+        palmJumeirah: {
+          center: [25.1124, 55.1390],
+          area: [
+            [25.1224, 55.1290],
+            [25.1224, 55.1490],
+            [25.1024, 55.1490],
+            [25.1024, 55.1290]
+          ]
+        }
+      };
+
+      const lowercaseMessage = message.toLowerCase();
+      let selectedArea;
+
+      if (lowercaseMessage.includes('downtown')) {
+        selectedArea = areas.downtown;
+      } else if (lowercaseMessage.includes('marina')) {
+        selectedArea = areas.marina;
+      } else if (lowercaseMessage.includes('palm')) {
+        selectedArea = areas.palmJumeirah;
+      }
+
+      if (selectedArea) {
+        setMapLocation(selectedArea.center as LatLngExpression);
+        setHighlightedArea(selectedArea.area as LatLngExpression[]);
+      } else {
+        // Default to Downtown Dubai if no specific area is mentioned
+        setMapLocation(areas.downtown.center as LatLngExpression);
+        setHighlightedArea(undefined);
+      }
+    };
+
+    simulateMapInteraction();
     
     // Simulate bot response
     setTimeout(() => {
