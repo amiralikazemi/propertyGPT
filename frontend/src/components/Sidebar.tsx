@@ -167,7 +167,7 @@ const Sidebar = () => {
                             Chat History
                         </h3>
 
-                        <div className="space-y-1 overflow-y-auto max-h-[20vh]">
+                        <div className="space-y-1 overflow-y-auto max-h-[30vh]">
                             {chatHistory.map((chat) => (
                                 <div
                                     key={chat.id}
