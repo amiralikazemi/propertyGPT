@@ -7,7 +7,6 @@ import { useStore } from './store/store';
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet';
-import type { LatLngExpression } from 'leaflet';
 
 // Fix for default marker icon
 const defaultIcon = new Icon({

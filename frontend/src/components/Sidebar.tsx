@@ -62,15 +62,6 @@ const Sidebar = () => {
         }
     };
 
-    const handleChatSelect = (chatId: number) => {
-        if (!editing) {
-            setActiveChat(chatId);
-            // Close mobile menu when selecting a chat on mobile
-            if (mobileMenuOpen) {
-                setMobileMenuOpen(false);
-            }
-        }
-    };
 
     return (
         <>
